@@ -3,6 +3,7 @@ import { Property } from "@/lib/data";
 
 const API_URL = "http://localhost:5001/api/properties";
 
+
 export const useProperties = () => {
     return useQuery({
         queryKey: ["properties"],

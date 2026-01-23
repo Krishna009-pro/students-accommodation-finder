@@ -52,6 +52,12 @@ const parseFirestoreDocument = (doc: any) => {
 
     // Ensure arrays are initialized
     if (!data.images) data.images = [];
+
+    // Fix for missing images in favorites (map single image to array)
+    if (data.images.length === 0 && data.image) {
+        data.images.push(data.image);
+    }
+
     if (!data.amenities) data.amenities = [];
     if (!data.aiInsights) data.aiInsights = [];
 

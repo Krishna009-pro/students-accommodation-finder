@@ -27,6 +27,7 @@ import { ReviewCard } from "@/components/ReviewCard";
 import { useCompare } from "@/contexts/CompareContext";
 import { useProperty, useReviews } from "@/hooks/useProperties";
 import { PropertyMap } from "@/components/PropertyMap";
+import { Property3DView } from "@/components/Property3DView";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -219,6 +220,9 @@ const PropertyDetail = () => {
                   </div>
                 </div>
 
+                {/* 3D View */}
+                <Property3DView />
+
                 {/* Description */}
                 <div className="bg-card rounded-2xl p-6 border border-border">
                   <h2 className="font-semibold text-lg mb-3">About This Place</h2>
@@ -292,7 +296,7 @@ const PropertyDetail = () => {
                 <div className="bg-card rounded-2xl p-6 border border-border shadow-card sticky top-24">
                   <div className="mb-4">
                     <span className="text-3xl font-bold text-gradient-primary">
-                      ${property.price}
+                      ₹{property.price}
                     </span>
                     <span className="text-muted-foreground">/month</span>
                   </div>

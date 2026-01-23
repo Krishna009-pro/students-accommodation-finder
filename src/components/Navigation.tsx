@@ -20,11 +20,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const navLinks = [
+const baseNavLinks = [
   { to: "/", label: "Home", icon: Home },
   { to: "/search", label: "Search", icon: Search },
   { to: "/compare", label: "Compare", icon: BarChart3 },
-  { to: "/favorites", label: "Favorites", icon: Heart },
 ];
 
 export const Navigation = () => {
@@ -39,6 +38,10 @@ export const Navigation = () => {
     await signOut();
     navigate("/login");
   };
+
+  const navLinks = currentUser
+    ? [...baseNavLinks, { to: "/favorites", label: "Favorites", icon: Heart }]
+    : baseNavLinks;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">

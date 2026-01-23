@@ -7,7 +7,7 @@ If you want to work locally using your own IDE, you can clone this repo and push
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
-
+For Frontend
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
 git clone https://github.com/Krishna009-pro/students-accommodation-finder.git
@@ -18,8 +18,20 @@ cd students-accommodation-finder
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server.
 npm run dev
+```
+
+For Backend
+```sh
+# Step 1: open new terminal and navigate to the backend directory
+cd students-accommodation-finder/backend
+
+# Step 2: Install the necessary dependencies.
+npm i
+
+# Step 3: Start the development server.
+npm run start
 ```
 
 **Edit a file directly in GitHub**

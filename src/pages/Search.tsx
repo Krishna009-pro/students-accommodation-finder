@@ -19,7 +19,7 @@ const Search = () => {
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
-    priceRange: [500, 3000],
+    priceRange: [0, 50000],
     rating: 0,
     roomTypes: [],
     hasMess: null,
@@ -68,7 +68,7 @@ const Search = () => {
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (filters.priceRange[0] !== 500 || filters.priceRange[1] !== 3000) count++;
+    if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 50000) count++;
     if (filters.rating > 0) count++;
     if (filters.roomTypes.length > 0) count++;
     if (filters.hasMess !== null) count++;
@@ -214,7 +214,7 @@ const Search = () => {
                   variant="outline"
                   onClick={() =>
                     setFilters({
-                      priceRange: [500, 3000],
+                      priceRange: [0, 50000],
                       rating: 0,
                       roomTypes: [],
                       hasMess: null,

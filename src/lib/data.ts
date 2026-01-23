@@ -38,7 +38,12 @@ export const colleges = [
   "University of Pennsylvania",
   "Cornell University",
   "Brown University",
+  "Indira College of Engineering and Management",
+  "COEP",
+  "IIT Mumbai",
+  "JSPM",
 ];
+
 
 
 

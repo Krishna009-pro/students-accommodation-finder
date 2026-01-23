@@ -103,7 +103,7 @@ export const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: Filt
 
   const handleReset = () => {
     const defaultFilters: FilterState = {
-      priceRange: [500, 3000],
+      priceRange: [0, 50000],
       rating: 0,
       roomTypes: [],
       hasMess: null,
@@ -162,10 +162,10 @@ export const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: Filt
               <div className="px-1">
                 <div className="flex justify-between text-sm mb-3">
                   <span className="text-muted-foreground">
-                    ${localFilters.priceRange[0]}
+                    ₹{localFilters.priceRange[0]}
                   </span>
                   <span className="text-muted-foreground">
-                    ${localFilters.priceRange[1]}
+                    ₹{localFilters.priceRange[1]}
                   </span>
                 </div>
                 <Slider
@@ -173,9 +173,9 @@ export const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: Filt
                   onValueChange={(value) =>
                     setLocalFilters({ ...localFilters, priceRange: value as [number, number] })
                   }
-                  min={500}
-                  max={3000}
-                  step={50}
+                  min={0}
+                  max={50000}
+                  step={1000}
                   className="mb-2"
                 />
               </div>
@@ -195,8 +195,8 @@ export const FilterSidebar = ({ filters, onFilterChange, isOpen, onClose }: Filt
                     key={rating}
                     onClick={() => setLocalFilters({ ...localFilters, rating })}
                     className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm transition-colors ${localFilters.rating === rating
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted hover:bg-muted/80"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted hover:bg-muted/80"
                       }`}
                   >
                     {rating === 0 ? (

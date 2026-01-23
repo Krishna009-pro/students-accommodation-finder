@@ -215,7 +215,7 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
           <div className={`flex items-center justify-between ${isGrid ? "" : "mt-auto"}`}>
             <div>
               <span className="text-2xl font-bold text-gradient-primary">
-                ${property.price}
+                ₹{property.price}
               </span>
               <span className="text-muted-foreground text-sm">/month</span>
             </div>
