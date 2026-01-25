@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Property } from "@/lib/data";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { API_URL } from "@/lib/config";
 
-const API_URL = "http://localhost:5001/api/favorites";
 
 export const useFavorites = () => {
     const token = localStorage.getItem('token');

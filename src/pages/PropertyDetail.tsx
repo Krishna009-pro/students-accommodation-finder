@@ -30,6 +30,7 @@ import { PropertyMap } from "@/components/PropertyMap";
 import { Property3DView } from "@/components/Property3DView";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/contexts/AuthContext";
+import { API_URL } from "@/lib/config";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -351,7 +352,7 @@ const PropertyDetail = () => {
                           try {
                             toast.loading("Generating insights...");
                             const token = localStorage.getItem('token');
-                            const res = await fetch('http://localhost:5001/api/ai/insights', {
+                            const res = await fetch(`${API_URL}/ai/insights`, {
                               method: 'POST',
                               headers: {
                                 'Content-Type': 'application/json',

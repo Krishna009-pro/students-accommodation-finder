@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Property } from "@/lib/data";
+import { API_URL } from "@/lib/config";
 
-const API_URL = "http://localhost:5001/api/properties";
+
 
 
 export const useProperties = () => {

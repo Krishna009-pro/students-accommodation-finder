@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { API_URL } from "@/lib/config";
 
 const Profile = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +35,7 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const response = await fetch('http://localhost:5001/api/user/profile', {
+            const response = await fetch(`${API_URL}/user/profile`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -79,7 +80,7 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             const interestsArray = formData.interests.split(',').map(i => i.trim()).filter(i => i);
 
-            const response = await fetch('http://localhost:5001/api/user/profile', {
+            const response = await fetch(`${API_URL}/user/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

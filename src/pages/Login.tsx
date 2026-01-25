@@ -11,6 +11,8 @@ import { toast } from "sonner";
 // import { auth } from "@/lib/firebase"; // Kept if needed for future hybrid sync
 // import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { API_URL } from "@/lib/config";
+
 
 const Login = () => {
   const { login } = useAuth();
@@ -33,7 +35,8 @@ const Login = () => {
     try {
       if (isLogin) {
         // Call backend login endpoint using fetch
-        const response = await fetch('http://localhost:5001/api/auth/login', {
+        // Call backend login endpoint using fetch
+        const response = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +64,8 @@ const Login = () => {
         navigate("/");
       } else {
         // Call backend register endpoint using fetch
-        const response = await fetch('http://localhost:5001/api/auth/register', {
+        // Call backend register endpoint using fetch
+        const response = await fetch(`${API_URL}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

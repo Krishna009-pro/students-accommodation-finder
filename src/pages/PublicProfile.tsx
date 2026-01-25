@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { User, MapPin, GraduationCap, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { API_URL } from "@/lib/config";
 
 const PublicProfile = () => {
     const { id } = useParams<{ id: string }>();
@@ -18,7 +19,7 @@ const PublicProfile = () => {
 
     const fetchPublicProfile = async (userId: string) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/user/${userId}`);
+            const response = await fetch(`${API_URL}/user/${userId}`);
 
             if (!response.ok) {
                 if (response.status === 404) throw new Error("User not found");

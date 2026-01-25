@@ -12,6 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 // import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "sonner";
 
+import { API_URL } from "@/lib/config";
+
 const WriteReview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ const WriteReview = () => {
         // createdAt handled by backend
       };
 
-      const response = await fetch(`http://localhost:5001/api/properties/${id}/reviews`, {
+      const response = await fetch(`${API_URL}/properties/${id}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
