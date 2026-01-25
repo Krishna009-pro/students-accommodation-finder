@@ -14,7 +14,7 @@ export const useFavorites = () => {
         queryKey: ["favorites", currentUser?.uid],
         queryFn: async () => {
             if (!token) return [];
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}/favorites`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -28,7 +28,7 @@ export const useFavorites = () => {
     const addFavoriteMutation = useMutation({
         mutationFn: async (property: Property) => {
             if (!token) throw new Error("Please sign in to add favorites");
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}/favorites`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export const useFavorites = () => {
     const removeFavoriteMutation = useMutation({
         mutationFn: async (id: string) => {
             if (!token) throw new Error("Please sign in to remove favorites");
-            const response = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_URL}/favorites/${id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
