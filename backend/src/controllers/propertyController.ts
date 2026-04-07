@@ -6,10 +6,17 @@ dotenv.config();
 
 const db = admin.firestore();
 
+const cleanPropertyData = (data: any) => {
+    if (data.images && Array.isArray(data.images)) {
+        data.images = data.images.map((img: string) => img.replace('/src/assets/', '/assets/'));
+    }
+    return data;
+};
+
 export const getAllProperties = async (req: Request, res: Response) => {
     try {
         const snapshot = await db.collection('properties').get();
-        const properties = snapshot.docs.map(doc => ({
+        const properties = snapshot.docs.map(doc => cleanPropertyData({
             id: doc.id,
             ...doc.data()
         }));
@@ -30,10 +37,10 @@ export const getPropertyById = async (req: Request, res: Response) => {
             return res.status(404).json({ error: "Property not found" });
         }
 
-        res.status(200).json({
+        res.status(200).json(cleanPropertyData({
             id: doc.id,
             ...doc.data()
-        });
+        }));
     } catch (error: any) {
         console.error("Error fetching property:", error.message);
         res.status(500).json({ error: "Failed to fetch property" });
