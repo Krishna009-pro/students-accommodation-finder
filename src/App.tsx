@@ -19,40 +19,43 @@ import Profile from "./pages/Profile";
 import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 import { ChatBot } from "@/components/ChatBot";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <CompareProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Navigation />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/property/:id" element={<PropertyDetail />} />
-                <Route path="/property/:id/review" element={<WriteReview />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/u/:id" element={<PublicProfile />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <CompareDrawer />
-              <CompareToggle />
-              <ChatBot />
-            </BrowserRouter>
-          </TooltipProvider>
-        </CompareProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <CompareProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Navigation />
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/property/:id" element={<PropertyDetail />} />
+                  <Route path="/property/:id/review" element={<WriteReview />} />
+                  <Route path="/compare" element={<Compare />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/u/:id" element={<PublicProfile />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <CompareDrawer />
+                <CompareToggle />
+                <ChatBot />
+              </BrowserRouter>
+            </TooltipProvider>
+          </CompareProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
