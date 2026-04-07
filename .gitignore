@@ -29,6 +29,8 @@ backend/serviceAccountKey.json
 !package.json
 !package-lock.json
 !tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
 !components.json
 .env
 backend/.env
