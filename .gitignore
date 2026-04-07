@@ -27,6 +27,7 @@ dist-ssr
 backend/serviceAccountKey.json
 *.json
 !package.json
+!package-lock.json
 !tsconfig.json
 !components.json
 .env
