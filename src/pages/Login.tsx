@@ -7,15 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-// import axios from "axios";
-// import { auth } from "@/lib/firebase"; // Kept if needed for future hybrid sync
-// import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  updateProfile 
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
-import { API_URL } from "@/lib/config";
 
 
 const Login = () => {
-  const { login } = useAuth();
+  const { signInWithGoogle } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,76 +30,68 @@ const Login = () => {
     rememberMe: false,
   });
 
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signInWithGoogle();
+      toast.success("Welcome back!");
+      navigate("/");
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Failed to sign in with Google");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       if (isLogin) {
-        // Call backend login endpoint using fetch
-        // Call backend login endpoint using fetch
-        const response = await fetch(`${API_URL}/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Login failed');
-        }
-
-        console.log("Backend login success:", data);
-
-        // Update functionality to update Auth Context state
-        if (data.user && data.tokens) {
-          login(data.user, data.tokens.idToken);
-        }
+        // Sign in using Firebase SDK directly on the client
+        // This avoids the 403 Permission Denied error from the backend REST API
+        await signInWithEmailAndPassword(
+          auth, 
+          formData.email, 
+          formData.password
+        );
 
         toast.success("Welcome back!");
         navigate("/");
       } else {
-        // Call backend register endpoint using fetch
-        // Call backend register endpoint using fetch
-        const response = await fetch(`${API_URL}/auth/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            name: formData.name,
-            college: formData.college
-          }),
-        });
+        // Create user using Firebase SDK directly on the client
+        const userCredential = await createUserWithEmailAndPassword(
+          auth, 
+          formData.email, 
+          formData.password
+        );
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Registration failed');
-        }
-
-        console.log("Backend registration success:", data);
-
-        // Auto-login after registration
-        if (data.user && data.tokens) {
-          login(data.user, data.tokens.idToken);
+        // Update profile with name if provided
+        if (formData.name) {
+          await updateProfile(userCredential.user, {
+            displayName: formData.name
+          });
         }
 
         toast.success("Account created successfully! Welcome!");
         navigate("/");
-        // setIsLogin(true); // No longer needed as we redirect
       }
     } catch (error: any) {
-      console.error(error);
-      const message = error.message || "An error occurred";
+      console.error("Auth Error:", error);
+      let message = "An error occurred during authentication";
+      
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        message = "Invalid email or password";
+      } else if (error.code === 'auth/email-already-in-use') {
+        message = "Email is already in use";
+      } else if (error.code === 'auth/weak-password') {
+        message = "Password is too weak";
+      } else if (error.message) {
+        message = error.message;
+      }
+      
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -246,7 +240,7 @@ const Login = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3 mt-6">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={isLoading}>
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"

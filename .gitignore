@@ -23,4 +23,16 @@ dist-ssr
 *.sln
 *.sw?
 
+
 backend/serviceAccountKey.json
+*.json
+!package.json
+!tsconfig.json
+!components.json
+.env
+backend/.env
+*.env
+*.env.local
+.DS_Store
+dist/
+node_modules/

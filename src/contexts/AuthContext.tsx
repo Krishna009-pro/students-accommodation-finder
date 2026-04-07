@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, User as FirebaseUser } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
 
 // Define a simplified User type matching our backend response
 export interface User {
@@ -12,7 +14,8 @@ interface AuthContextType {
     currentUser: User | null;
     loading: boolean;
     login: (user: User, token: string) => void;
-    signOut: () => void;
+    signInWithGoogle: () => Promise<void>;
+    signOut: () => Promise<void>;
     token: string | null;
 }
 
@@ -24,21 +27,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check local storage on mount
-        const storedUser = localStorage.getItem("user");
-        const storedToken = localStorage.getItem("token");
-
-        if (storedUser && storedToken) {
-            try {
-                setCurrentUser(JSON.parse(storedUser));
-                setToken(storedToken);
-            } catch (e) {
-                console.error("Failed to parse stored user", e);
+        // Subscribe to Firebase Auth state changes
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+            if (firebaseUser) {
+                const idToken = await firebaseUser.getIdToken();
+                const user: User = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email || "",
+                    displayName: firebaseUser.displayName,
+                    photoURL: firebaseUser.photoURL
+                };
+                
+                setCurrentUser(user);
+                setToken(idToken);
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("token", idToken);
+            } else {
+                setCurrentUser(null);
+                setToken(null);
                 localStorage.removeItem("user");
                 localStorage.removeItem("token");
             }
-        }
-        setLoading(false);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     const login = (user: User, authToken: string) => {
@@ -48,17 +61,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem("token", authToken);
     };
 
-    const signOut = () => {
-        setCurrentUser(null);
-        setToken(null);
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
+    const signInWithGoogle = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error("Google Sign-In Error:", error);
+            throw error;
+        }
+    };
+
+    const signOut = async () => {
+        try {
+            await firebaseSignOut(auth);
+            setCurrentUser(null);
+            setToken(null);
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+        } catch (error) {
+            console.error("Sign-Out Error:", error);
+            throw error;
+        }
     };
 
     const value = {
         currentUser,
         loading,
         login,
+        signInWithGoogle,
         signOut,
         token
     };
@@ -77,4 +106,3 @@ export const useAuth = () => {
     }
     return context;
 };
-

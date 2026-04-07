@@ -40,15 +40,19 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
+    if (property.images && property.images.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
+    }
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? property.images.length - 1 : prev - 1
-    );
+    if (property.images && property.images.length > 0) {
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? property.images.length - 1 : prev - 1
+      );
+    }
   };
 
   const handleCompareClick = (e: React.MouseEvent) => {
@@ -64,10 +68,7 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!currentUser) {
-      // Hook handles toast error for unauth, or we can toast here
-      return;
-    }
+    if (!currentUser) return;
     if (isFav) {
       removeFavorite(property.id);
     } else {
@@ -150,23 +151,17 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
                 }`}
             />
           </button>
-
-          {/* Sentiment Bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-1">
-            <div
-              className={`h-full ${getSentimentColor(property.sentimentScore)}`}
-              style={{ width: `${property.sentimentScore}%` }}
-            />
-          </div>
         </div>
 
         {/* Content Section */}
-        <div className={`p-4 flex-1 ${isGrid ? "" : "flex flex-col"}`}>
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
+        <div className="p-5 flex-1 flex flex-col">
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+              {property.title}
+            </h3>
             <div className="flex items-center gap-1 shrink-0">
               <Star className="w-4 h-4 fill-warning text-warning" />
-              <span className="font-medium">{property.rating}</span>
+              <span className="font-semibold">{property.rating}</span>
               <span className="text-muted-foreground text-sm">({property.reviewCount})</span>
             </div>
           </div>
@@ -195,7 +190,7 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
 
           {/* Amenities Preview */}
           <div className="flex flex-wrap gap-1 mb-4">
-            {property.amenities.slice(0, 4).map((amenity) => (
+            {property.amenities?.slice(0, 4).map((amenity) => (
               <span
                 key={amenity}
                 className="text-xs bg-muted px-2 py-1 rounded-md"
@@ -204,9 +199,9 @@ export const PropertyCard = ({ property, variant = "grid" }: PropertyCardProps) 
                 {amenityIcons[amenity] || "✨"} {amenity}
               </span>
             ))}
-            {property.amenities.length > 4 && (
+            {(property.amenities?.length || 0) > 4 && (
               <span className="text-xs bg-muted px-2 py-1 rounded-md text-muted-foreground">
-                +{property.amenities.length - 4} more
+                +{(property.amenities?.length || 0) - 4} more
               </span>
             )}
           </div>

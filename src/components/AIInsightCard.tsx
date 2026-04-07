@@ -8,6 +8,8 @@ interface AIInsightCardProps {
 const insightIcons = [Lightbulb, TrendingUp, Users, Zap];
 
 export const AIInsightCard = ({ insights }: AIInsightCardProps) => {
+  if (!insights || insights.length === 0) return null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

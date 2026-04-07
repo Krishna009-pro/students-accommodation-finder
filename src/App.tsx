@@ -18,6 +18,7 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
+import { ChatBot } from "@/components/ChatBot";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
               </Routes>
               <CompareDrawer />
               <CompareToggle />
+              <ChatBot />
             </BrowserRouter>
           </TooltipProvider>
         </CompareProvider>

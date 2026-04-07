@@ -31,6 +31,7 @@ import { Property3DView } from "@/components/Property3DView";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_URL } from "@/lib/config";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -40,6 +41,7 @@ const PropertyDetail = () => {
   const { addToCompare, isInCompare, compareList } = useCompare();
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { currentUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const isFav = property ? isFavorite(property.id) : false;
 
@@ -59,13 +61,13 @@ const PropertyDetail = () => {
   }
 
   const nextImage = () => {
-    if (property) {
+    if (property && property.images && property.images.length > 0) {
       setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
     }
   };
 
   const prevImage = () => {
-    if (property) {
+    if (property && property.images && property.images.length > 0) {
       setCurrentImageIndex((prev) =>
         prev === 0 ? property.images.length - 1 : prev - 1
       );
@@ -101,7 +103,7 @@ const PropertyDetail = () => {
                 {/* Main Image */}
                 <div className="col-span-4 md:col-span-2 md:row-span-2 relative aspect-[4/3] md:aspect-auto">
                   <img
-                    src={property.images[currentImageIndex]}
+                    src={property.images && property.images.length > 0 ? property.images[currentImageIndex] : "/placeholder.jpg"}
                     alt={property.title}
                     className="w-full h-full object-cover"
                   />
@@ -122,12 +124,12 @@ const PropertyDetail = () => {
 
                   {/* Image Counter */}
                   <div className="absolute bottom-4 left-4 bg-background/80 px-3 py-1 rounded-full text-sm">
-                    {currentImageIndex + 1} / {property.images.length}
+                    {currentImageIndex + 1} / {property.images?.length || 0}
                   </div>
                 </div>
 
                 {/* Thumbnail Grid */}
-                {property.images.slice(0, 4).map((image, index) => (
+                {property.images?.slice(0, 4).map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
@@ -184,7 +186,7 @@ const PropertyDetail = () => {
                           </Badge>
                         )}
                         <Badge variant="roomType">
-                          {property.roomType.charAt(0).toUpperCase() + property.roomType.slice(1)} Room
+                          {property.roomType?.charAt(0).toUpperCase() + property.roomType?.slice(1)} Room
                         </Badge>
                         {property.hasMess && (
                           <Badge variant="mess" className="gap-1">
@@ -233,19 +235,19 @@ const PropertyDetail = () => {
                   <div className="mt-4 pt-4 border-t border-border">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Student Satisfaction</span>
-                      <span className={`font-semibold ${getSentimentText(property.sentimentScore).color}`}>
-                        {getSentimentText(property.sentimentScore).text}
+                      <span className={`font-semibold ${getSentimentText(property.sentimentScore || 0).color}`}>
+                        {getSentimentText(property.sentimentScore || 0).text}
                       </span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
-                        className={`h-full transition-all ${property.sentimentScore >= 80
+                        className={`h-full transition-all ${(property.sentimentScore || 0) >= 80
                           ? "bg-success"
-                          : property.sentimentScore >= 60
+                          : (property.sentimentScore || 0) >= 60
                             ? "bg-warning"
                             : "bg-destructive"
                           }`}
-                        style={{ width: `${property.sentimentScore}%` }}
+                        style={{ width: `${property.sentimentScore || 0}%` }}
                       />
                     </div>
                   </div>
@@ -255,7 +257,7 @@ const PropertyDetail = () => {
                 <div className="bg-card rounded-2xl p-6 border border-border">
                   <h2 className="font-semibold text-lg mb-4">Amenities</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {property.amenities.map((amenity) => (
+                    {property.amenities?.map((amenity) => (
                       <div
                         key={amenity}
                         className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl"
@@ -364,12 +366,11 @@ const PropertyDetail = () => {
                             const data = await res.json();
                             if (data.error) throw new Error(data.error);
 
-                            // Optimistically update the UI (in real app, use React Query mutation)
-                            property.aiInsights = data.insights;
+                            // Invalidate the property query to fetch fresh data with insights
+                            queryClient.invalidateQueries({ queryKey: ["property", id] });
+
                             toast.dismiss();
                             toast.success("Insights generated!");
-                            // Force re-render (hacky but works for now without complex state refactor)
-                            window.location.reload();
                           } catch (err: any) {
                             toast.dismiss();
                             toast.error(err.message || "Failed to generate insights");
