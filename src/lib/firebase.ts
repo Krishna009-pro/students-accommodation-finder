@@ -11,11 +11,25 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Safety check for production environment variables
+const isConfigValid = firebaseConfig.apiKey && firebaseConfig.projectId;
+
+if (!isConfigValid) {
+  console.warn("Firebase configuration is missing. Authentication features may not work. Please check your Environment Variables.");
+}
+
+// Initialize Firebase with basic error handling
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+} catch (error) {
+  console.error("Failed to initialize Firebase:", error);
+  // Create a mock app if initialization fails to prevent total crash
+  app = {} as any;
+}
 
 // Initialize Firebase Auth
-export const auth = getAuth(app);
+export const auth = (app && Object.keys(app).length > 0) ? getAuth(app) : null as any;
 export const googleProvider = new GoogleAuthProvider();
 
 export default app;
